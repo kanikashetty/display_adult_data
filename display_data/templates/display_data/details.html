@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load staticfiles %}
+    <link href="{% static "css/metro-bootstrap.css" %}" rel="stylesheet"/>
+    <link href="{% static "css/metro-bootstrap-responsive.css" %}" rel="stylesheet"/>
+    <link href="{% static "css/iconFont.css" %}" rel="stylesheet"/>
+    <link href="{% static "css/buttons.dataTables.min.css" %}" rel="stylesheet"/>
+	<script src="{% static "js/jquery/jquery.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/jquery/jquery.widget.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/metro.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/metro-accordion.js" %}" type="text/javascript" ></script>
+    <script src="{% static "js/metro/metro-tab-control.js" %}" type="text/javascript" ></script>
+    <!-- <script src="{% static "js/jquery/dataTables.buttons.js" %}" type="text/javascript" ></script> -->
+    <script src="{% static "js/jquery/jquery.dataTables.js" %}" type="text/javascript" ></script>
+    <script src="{% static "js/jquery/dataTables.select.min.js" %}" type="text/javascript" ></script>
+    <script>
+        function populate(col_name,filter) {
+            var ajax_data = { "csrfmiddlewaretoken" : '{{ csrf_token }}'}
+            if (typeof col_name!='undefined' && filter!='undefined'){
+                var ajax_data =    {
+		        	    "csrfmiddlewaretoken" : '{{ csrf_token }}',
+                        "column_name" : col_name,
+                        "filter" : filter
+		            } 
+            }
+                $('#node').DataTable({
+                    "processing": true,
+                    "destroy": true,
+                    "serverSide": true,
+                    "ajax": {
+                                "url": "{% url 'details' %}",
+                                "type": "POST",
+                                "data" : ajax_data                              
+                            },
+                    "columns": [
+                                    { "data": "age" },
+                                    { "data": "workclass" },
+                                    { "data": "fnlwgt" },
+                                    { "data": "education" },
+                                    { "data": "education_num" },
+                                    { "data": "marital_status" },
+                                    { "data": "occupation" },
+                                    { "data": "relationship" },
+                                    { "data": "race" },
+                                    { "data": "sex" },
+                                    { "data": "capital_gain" },
+                                    { "data": "capital_loss" },
+                                    { "data": "native_country" },
+                                    { "data": "salary_per_anum" },
+                            
+                                ]
+                });
+            	}
+        $(document).ready(function(){
+            populate()
+        });
+    </script>
+
+</head>
+
+<body class="metro">
+	<header class="bg-dark">
+            <nav class="navigation-bar dark">
+                    <nav class="navigation-bar-content">
+                           <p style="color: white; text-align :center;font-size: 15pt;margin-top:10px"><strong>Data of Adults</strong> <p> 
+                    </nav>
+                </nav>
+	</header>		
+	<!-- <div class="container-fluid" style="padding-top:3px;background-color:#bebebe91;height:100%;width:100%"> -->
+
+        {% if messages %}
+            <div id="messages">
+                {% for message in messages %}
+            <p class="fg-red {{ message.tags }}">{{ message|capfirst }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="grid fluid"  style="padding-top:3px;background-color:#bebebe91;">
+            <div class="row">
+                <div class="span4">
+                        <ul class="dropdown-menu dark open" style="margin:1%">
+                                <h4 style="color:white">Filter By</h4>
+                                <li class="divider"></li>
+                                <li><strong>Relationship</strong></li>
+                                {% for i in relation %}
+                                <li><a href="#" onclick="populate('relationship','{{i}}')">{{i}}</a></li>
+                                {% endfor %}
+                                <li class="divider"></li>
+                                <li><strong>Sex</strong></li>
+                                {% for i in sex %}
+                                <li><a href="#" onclick="populate('sex','{{i}}')">{{i}}</a></li>
+                                {% endfor %}
+                                <li class="divider"></li>
+                                <li><strong>Race</strong></li>
+                                {% for i in race %}
+                                <li><a href="#" onclick="populate('race','{{i}}')">{{i}}</a></li>
+                                {% endfor %}
+                            </ul>
+                </div>
+                <div class="span8">
+                <div class="table-container" style="overflow-x:auto;width:95%;border: 2px solid black">
+                    <table id="node" class="display table hovered striped">
+                            <thead>
+                                <tr>
+                                    <th>Age</th>
+                                    <th>workclass</th>
+                                    <th>Fnlwgt</th>
+                                    <th>education</th>
+                                    <th >EducationNum</th>
+                                    <th >MaritalStatus</th>
+                                    <th >Occupation</th>
+                                    <th >Relationship</th>
+                                    <th >Race</th>
+                                    <th >Sex</th>
+                                    <th >CapitalGain</th>
+                                    <th >CapitalLoss</th>
+                                    <th >NativeCountry</th>
+                                    <th >SalaryPerAnum</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    <!-- </div> -->
+    
+</body>
+</html>
